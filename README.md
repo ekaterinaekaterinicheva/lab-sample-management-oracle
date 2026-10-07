@@ -1,4 +1,4 @@
-# Lab Sample Management — Oracle Database Project
+# Lab Sample Management - Oracle Database Project
 
 This is a small Oracle Database project that models the core workflow of a testing
 laboratory: a client submits a sample, it goes through one or more tests,
@@ -19,7 +19,7 @@ So, this project is deliberately built around the following:
 1. A schema and data model realistic enough to hold the process it
    represents (sample intake -> testing -> results -> invoice).
 2. A number of "support tickets" with queries that answer them
-   — because reading data and troubleshooting is most of what the
+   - because reading data and troubleshooting is most of what the
    day-to-day of this kind of role looks like.
 
 ## What this project is NOT
@@ -35,6 +35,7 @@ lab-sample-management-oracle/
 ├── README.md
 ├── docs/
 │   ├── er-diagram.drawio      -- entity relationship diagram (completed using draw.io)
+    ├── er-diagram.png         -- same diagram, exported as an image for the README below
 │   └── constraints.md         -- explanation of every CHECK rule and why it exists
 ├── sql/
 │   ├── schema.sql             -- table definitions (DDL)
@@ -55,7 +56,13 @@ come back passing or failing a defined limit; and a test can be re-run,
 which is why one test can end up with more than one recorded result over
 time.
 
-## Data model — relationship logic
+## Entity-Relationship Diagram
+![Entity-Relationship Diagram](docs/er-diagram.png)
+
+The editable drawio file is at docs/er-diagram.drawio - open it with draw.io if you want to modify it.
+
+
+## Data model - relationship logic
 
 ```
 CLIENTS -> ORDERS (1:N) — one client can place multiple orders.
@@ -101,7 +108,7 @@ that the support queries below actually filter on (`samples.status`,
 |---|---|---|---|
 | `trg_test_results_limits` | Trigger | Automatically sets `is_within_limits` (PASS/FAIL) on a new result by looking up the allowed threshold for that test type, unless a value was already supplied manually | Removes a manual call and keeps PASS/FAIL consistent regardless of who enters the result |
 | `mark_expired_samples` | Procedure | Finds samples whose testing deadline has passed but which were never finished, and changes their status to `EXPIRED` | Models the kind of daily maintenance job that keeps data accurate without someone doing it by hand |
-| `get_sample_test_history` | Function | Given a `sample_test_id`, returns a summary: how many results exist and what the most recent one was | Built specifically to answer "why does this sample have conflicting results" — a kind of question a client / colleague might ask on a ticket |
+| `get_sample_test_history` | Function | Given a `sample_test_id`, returns a summary: how many results exist and what the most recent one was | Built specifically to answer "why does this sample have conflicting results" -- a kind of question a client / colleague might ask on a ticket |
 | `v_overdue_invoices` | View | Pre-joined, pre-filtered list of unpaid invoices past their due date | Saves re-writing the same multi-table JOIN every time someone needs this |
 | `v_pending_samples_without_tests` | View | Samples that have been received but have no test requested yet | Exposes a "stuck" state that's easy to miss with a normal query |
 
